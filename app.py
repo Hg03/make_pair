@@ -40,3 +40,26 @@ if st.button("Get Next Pair"):
     if not current_team_a or not current_team_b:
         st.error("Please select players for both current teams.")
     elif len(current_team_a) != 2 or len(current_team_b) != 2:
+        st.error("Each team must have exactly 2 players.")
+    else:
+        # Identify bench players (players not currently playing)
+        current_players = set(current_team_a + current_team_b)
+        previous_players = set(previous_team_a + previous_team_b)
+        bench_players = [p for p in players if p not in current_players]
+
+        if losing_team == "Team A":
+            if len(bench_players) < 2:
+                st.warning("Not enough players on the bench to replace Team A.")
+            else:
+                # Suggest replacement for Team A
+                next_pair = random.sample(bench_players, 2)
+                st.success(f"Suggested next Team A: {next_pair}")
+        elif losing_team == "Team B":
+            if len(bench_players) < 2:
+                st.warning("Not enough players on the bench to replace Team B.")
+            else:
+                # Suggest replacement for Team B
+                next_pair = random.sample(bench_players, 2)
+                st.success(f"Suggested next Team B: {next_pair}")
+        else:
+            st.info("No changes made as no team lost.")
