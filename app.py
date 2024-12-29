@@ -2,33 +2,39 @@ import streamlit as st
 import random
 
 # App title
-st.title("Dynamic Badminton Team Rotation")
+st.title("Dynamic Badminton Team Rotation (Using Names)")
 
-# Input total number of players
+# Input total number of players and their names
 st.header("Setup")
 total_players = st.number_input(
     "Enter the total number of players:", min_value=4, max_value=20, value=9, step=1
 )
-players = list(range(1, total_players + 1))
+st.write("Enter the names of all players:")
+player_names = []
+for i in range(1, total_players + 1):
+    name = st.text_input(f"Player {i} Name", key=f"player_{i}")
+    if name:
+        player_names.append(name)
 
 # Display player list
-st.write(f"Total players: {players}")
+if len(player_names) == total_players:
+    st.write(f"Player List: {player_names}")
 
 # Input for current and previous teams
 st.header("Current Match")
 current_team_a = st.multiselect(
-    "Select Team A Players", players, key="current_a", max_selections=2
+    "Select Team A Players", player_names, key="current_a", max_selections=2
 )
 current_team_b = st.multiselect(
-    "Select Team B Players", players, key="current_b", max_selections=2
+    "Select Team B Players", player_names, key="current_b", max_selections=2
 )
 
 st.header("Previous Match")
 previous_team_a = st.multiselect(
-    "Select Previous Team A Players", players, key="previous_a", max_selections=2
+    "Select Previous Team A Players", player_names, key="previous_a", max_selections=2
 )
 previous_team_b = st.multiselect(
-    "Select Previous Team B Players", players, key="previous_b", max_selections=2
+    "Select Previous Team B Players", player_names, key="previous_b", max_selections=2
 )
 
 # Losing team selection
@@ -45,7 +51,7 @@ if st.button("Get Next Pair"):
         # Identify bench players (players not currently playing)
         current_players = set(current_team_a + current_team_b)
         previous_players = set(previous_team_a + previous_team_b)
-        bench_players = [p for p in players if p not in current_players]
+        bench_players = [p for p in player_names if p not in current_players]
 
         if losing_team == "Team A":
             if len(bench_players) < 2:
